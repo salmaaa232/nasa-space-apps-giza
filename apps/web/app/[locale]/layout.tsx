@@ -10,6 +10,7 @@ import { DirectionProvider } from "@/components/ui/direction"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { routing } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
+import { SmoothScroll } from "@/components/smooth-scroll"
 
 const notoSansArabic = Noto_Sans_Arabic({
   subsets: ["arabic"],
@@ -85,6 +86,7 @@ export default async function LocaleLayout({
       )}
     >
       <body>
+        <SmoothScroll />
         <DirectionProvider direction={dir}>
           <ThemeProvider defaultTheme={(themeCookie as "light" | "dark" | "system") || "system"}>
             <TooltipProvider>

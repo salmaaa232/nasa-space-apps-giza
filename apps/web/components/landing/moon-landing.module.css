@@ -1,0 +1,247 @@
+.scene {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: 100svh;
+  min-height: 0;
+  padding: clamp(24px, 6svh, 64px) 5vw;
+  box-sizing: border-box;
+  background: #030305;
+  text-align: center;
+}
+.scene::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: 260px;
+  background: linear-gradient(#0b0915, transparent);
+}
+.stars {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 35%;
+  opacity: 0.6;
+  background:
+    radial-gradient(circle at 12% 23%, #dcd5f5 0 1px, transparent 1.5px),
+    radial-gradient(circle at 28% 9%, #dcd5f5 0 1px, transparent 1.5px),
+    radial-gradient(circle at 76% 16%, #dcd5f5 0 1px, transparent 1.5px),
+    radial-gradient(circle at 92% 37%, #dcd5f5 0 1px, transparent 1.5px),
+    radial-gradient(circle at 7% 65%, #dcd5f5 0 1px, transparent 1.5px),
+    radial-gradient(circle at 86% 72%, #dcd5f5 0 1px, transparent 1.5px);
+}
+.terrain {
+  position: absolute;
+  z-index: -1;
+  width: max(100%, 900px);
+  height: clamp(338px, 37.5vw, 720px);
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  mask-image: linear-gradient(transparent, #000 28%);
+}
+.terrainImage {
+  object-fit: fill;
+}
+.content {
+  position: relative;
+  z-index: 2;
+  width: 76%;
+  max-width: 980px;
+  max-height: calc(100% - 100px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  margin-inline: 0 auto;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #b9a8f5;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.content h2 {
+  margin-top: 22px;
+  font-family: var(--font-space-rabbit), var(--font-latin), sans-serif;
+  font-size: clamp(32px, 4.3vw, 62px);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.content h2 span {
+  display: block;
+  margin-top: 8px;
+  color: #b8a5ff;
+}
+.description {
+  max-width: 470px;
+  margin: 22px auto;
+  color: #b8b3c9;
+  font-size: 14px;
+  line-height: 1.8;
+  text-wrap: pretty;
+}
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: 20px;
+  color: #c9bedf;
+  font-size: 11px;
+}
+.signal {
+  flex: 0 0 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #b8a5ff;
+  box-shadow: 0 0 9px #b8a5ff50;
+}
+.cta {
+  min-height: 48px;
+  padding-inline: 24px;
+  gap: 12px;
+  color: #19122f;
+  background: #b8a5ff;
+  border: 1px solid #d7cbff;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 0 36px #b8a5ff18;
+}
+.cta:hover {
+  background: #cbbbff;
+}
+.note {
+  margin-top: 13px;
+  color: #a79cb7;
+  font-size: 10px;
+}
+.landingZone {
+  position: absolute;
+  left: 85%;
+  bottom: 7svh;
+  width: min(19vw, 27svh, 220px);
+  aspect-ratio: 160 / 248;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.ship {
+  position: absolute;
+  inset: 0;
+  animation: landing 16s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  transform-origin: 50% 90%;
+}
+.shipImage {
+  position: relative;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(4px 8px 5px #08051b55);
+}
+.exhaust {
+  position: absolute;
+  width: 24%;
+  height: 52%;
+  top: 83%;
+  left: 38%;
+  border-radius: 30% 30% 65% 65%;
+  background: linear-gradient(#f7f3ff, #b8a5ffb0 30%, #8877ff00);
+  filter: blur(5px);
+  transform-origin: top;
+  animation: thrust 16s ease-in-out infinite;
+}
+.shadow {
+  position: absolute;
+  bottom: -8px;
+  left: -12%;
+  width: 124%;
+  height: 15px;
+  border-radius: 50%;
+  background: #121020;
+  filter: blur(5px);
+  opacity: 0.3;
+  animation: shadow 16s ease-in-out infinite;
+}
+.dust {
+  position: absolute;
+  bottom: -14px;
+  left: -55%;
+  width: 210%;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #fffefa95, #d8d2e460 40%, transparent 70%);
+  filter: blur(6px);
+  opacity: 0;
+  animation: dust 16s ease-in-out infinite;
+}
+
+.scene[data-running="false"] .ship,
+.scene[data-running="false"] .exhaust,
+.scene[data-running="false"] .shadow,
+.scene[data-running="false"] .dust {
+  animation-play-state: paused;
+}
+.scene:dir(rtl) .content h2,
+.scene:dir(rtl) .eyebrow {
+  font-family: var(--font-arabic), sans-serif;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+@keyframes landing {
+  0%, 100% { transform: translate(12px, -70px) rotate(-12deg); }
+  28% { transform: translate(-8px, -45px) rotate(3deg); }
+  43%, 60% { transform: translate(0, 0) rotate(0); }
+  72% { transform: translate(0, -30px) rotate(-2deg); }
+  88% { transform: translate(8px, -60px) rotate(-10deg); }
+}
+@keyframes thrust {
+  0%, 25%, 72%, 100% { opacity: 0.85; transform: scaleY(1); }
+  38% { opacity: 0.5; transform: scaleY(0.4); }
+  43%, 60% { opacity: 0; transform: scaleY(0.1); }
+}
+@keyframes shadow {
+  0%, 100% { opacity: 0.08; transform: scale(0.5); }
+  43%, 60% { opacity: 0.4; transform: scale(1); }
+}
+@keyframes dust {
+  0%, 25%, 58%, 85%, 100% { opacity: 0; transform: scaleX(0.5); }
+  40%, 72% { opacity: 0.85; transform: scaleX(1.3); }
+  50%, 80% { opacity: 0; transform: scaleX(1.8); }
+}
+@media (max-width: 700px) {
+  .scene {
+    padding: clamp(18px, 4svh, 36px) 20px;
+  }
+  .content { width: 100%; max-height: calc(100% - 215px); }
+  .content h2 { font-size: clamp(25px, 6.8vw, 38px); margin-top: 12px; }
+  .description { font-size: 13px; margin-block: 14px; line-height: 1.6; }
+  .eyebrow { font-size: 9px; }
+  .status { font-size: 11px; margin-bottom: 12px; }
+  .landingZone { left: 72%; bottom: 20px; width: 120px; }
+  
+  .ship { animation-name: landingMobile; }
+}
+@keyframes landingMobile {
+  0%, 100% { transform: translate(12px, -32px) rotate(-10deg); }
+  28% { transform: translate(-5px, -30px) rotate(3deg); }
+  43%, 60% { transform: translate(0, 0) rotate(0); }
+  72% { transform: translate(0, -20px) rotate(-2deg); }
+  88% { transform: translate(8px, -28px) rotate(-8deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ship, .exhaust, .shadow, .dust { animation: none; }
+  .exhaust, .dust { display: none; }
+}
+
+@media (max-width: 700px) and (orientation: landscape) {
+  .content { width: 72%; max-height: 100%; }
+  .landingZone { left: 86%; width: min(120px, 30svh); bottom: 6svh; }
+  .terrain { height: 65svh; }
+}
