@@ -1,5 +1,32 @@
 {
   "Dashboard": {
+    "shell": {
+      "brand": "GIZA / MISSION CONTROL",
+      "home": "NASA Space Apps Giza home",
+      "accountFallback": "Space Apps Explorer",
+      "skipToContent": "Skip to dashboard content",
+      "navigation": "Workspace navigation",
+      "location": "Giza · NASA Space Apps",
+      "missionNote": "48 hours. One shared mission.",
+      "footer": "NASA Space Apps Giza · One shared mission.",
+      "roles": {
+        "participant": "PARTICIPANT / CAMP",
+        "organizer": "ORGANIZER / MISSION CONTROL",
+        "mentor": "MENTOR / CAMP",
+        "judge": "JUDGE / EVALUATION"
+      },
+      "nav": {
+        "mission": "Mission desk",
+        "challenges": "Challenges",
+        "findTeam": "Find a team",
+        "team": "My team",
+        "tasks": "Team tasks",
+        "community": "Community",
+        "schedule": "Camp agenda",
+        "mentors": "Mentors",
+        "submission": "Submission"
+      }
+    },
     "brand": "NASA Space Apps Giza",
     "brandSubtitle": "Hackathon Platform",
     "welcomeTitle": "Welcome, {name}",
@@ -108,7 +135,7 @@
       "teamsCount": "{count} teams",
       "projectsCount": "{count} projects"
     },
-  "organizer": {
+    "organizer": {
       "welcome": "Welcome to Organizer Dashboard",
       "description": "Manage teams, judges, mentors, and track event progress in real-time.",
       "newAnnouncement": "New Announcement",
@@ -200,21 +227,61 @@
           "subtitle": "Live distribution of teams across official NASA challenges",
           "teamsCount": "{count} teams",
           "tracks": [
-            { "name": "Earth Observation & Climate", "count": 14, "percentage": 29 },
-            { "name": "Planetary Exploration & Rovers", "count": 11, "percentage": 23 },
-            { "name": "Open Science & NASA Datasets", "count": 9, "percentage": 19 },
-            { "name": "Space Biology & Health", "count": 8, "percentage": 17 },
-            { "name": "Astrophysics & Deep Space", "count": 6, "percentage": 12 }
+            {
+              "name": "Earth Observation & Climate",
+              "count": 14,
+              "percentage": 29
+            },
+            {
+              "name": "Planetary Exploration & Rovers",
+              "count": 11,
+              "percentage": 23
+            },
+            {
+              "name": "Open Science & NASA Datasets",
+              "count": 9,
+              "percentage": 19
+            },
+            {
+              "name": "Space Biology & Health",
+              "count": 8,
+              "percentage": 17
+            },
+            {
+              "name": "Astrophysics & Deep Space",
+              "count": 6,
+              "percentage": 12
+            }
           ]
         },
         "readiness": {
           "title": "Submission Deliverables Readiness",
           "subtitle": "Deliverable completion rate across 48 registered teams",
           "deliverables": [
-            { "label": "Project Name & Abstract", "completed": 44, "total": 48, "percentage": 92 },
-            { "label": "GitHub / Code Repository", "completed": 38, "total": 48, "percentage": 79 },
-            { "label": "Demo Video / Prototype", "completed": 26, "total": 48, "percentage": 54 },
-            { "label": "Pitch Deck & Presentation", "completed": 19, "total": 48, "percentage": 39 }
+            {
+              "label": "Project Name & Abstract",
+              "completed": 44,
+              "total": 48,
+              "percentage": 92
+            },
+            {
+              "label": "GitHub / Code Repository",
+              "completed": 38,
+              "total": 48,
+              "percentage": 79
+            },
+            {
+              "label": "Demo Video / Prototype",
+              "completed": 26,
+              "total": 48,
+              "percentage": 54
+            },
+            {
+              "label": "Pitch Deck & Presentation",
+              "completed": 19,
+              "total": 48,
+              "percentage": 39
+            }
           ]
         },
         "agenda": {
@@ -524,6 +591,95 @@
       "title": "This section is under active preparation",
       "description": "This module is being prepared as part of the NASA Space Apps Giza platform.",
       "backToOverview": "Back to Overview"
+    },
+    "profilePage": {
+      "title": "Your skills & story",
+      "displayName": "Display name",
+      "preferredRole": "Preferred role",
+      "chooseRole": "Choose a role",
+      "skillsLabel": "Skills · Select all that apply",
+      "bioLabel": "Short bio",
+      "experienceLabel": "Previous projects / experience",
+      "interestsLabel": "Interests",
+      "challengeLabel": "Preferred challenge",
+      "challengePlaceholder": "Enter your preferred challenge",
+      "participationTitle": "How would you like to participate?",
+      "matchingTitle": "Your matching card",
+      "verified": "Email verified",
+      "privacyTitle": "Visibility & privacy",
+      "privacy": {
+        "isPublic": "Share skills, bio and interests with participants for matching.",
+        "shareProjectsWithMentors": "Share projects with mentors assigned to my team.",
+        "hideFromSearch": "Hide profile from participant search"
+      },
+      "privacyNote": "Organizers can access your full registration. Phone and email are never shown on matching cards.",
+      "preview": "Preview public profile",
+      "nextTitle": "Next stop",
+      "nextDescription": "Pick a challenge, then use matching to build a balanced team.",
+      "explore": "Explore challenges",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Changes saved",
+      "discard": "Discard changes",
+      "unsaved": "Unsaved changes",
+      "upToDate": "All changes saved",
+      "loading": "Loading your profile…",
+      "retry": "Try again",
+      "requestError": "We couldn’t reach the profile service. Your edits are still here. Please try again.",
+      "sessionExpired": "Your session has expired. Sign in again before saving.",
+      "signIn": "Sign in",
+      "conflict": "This profile was updated in another tab. Your edits have been kept here. Reload the latest profile before saving.",
+      "validationError": "Some profile details are invalid. Check your entries and try again.",
+      "reload": "Reload latest profile",
+      "nameRequired": "Enter a display name.",
+      "namePlaceholder": "Your name",
+      "skillsEmpty": "Add your role and skills",
+      "bioEmpty": "Add a short bio to tell future teammates about yourself.",
+      "hiddenNote": "Your profile is hidden from participant matching and search.",
+      "hiddenPreview": "This is a preview only. Your current privacy settings hide this profile from other participants.",
+      "previewDescription": "Preview of your current edits. Save changes to update what participants see. Contact details and previous projects are excluded.",
+      "close": "Close",
+      "leaveConfirm": "You have unsaved profile changes. Leave without saving?",
+      "discardConfirm": "Discard your unsaved edits?",
+      "findTeam": "Find a team",
+      "createTeam": "Explore teams",
+      "teamSummary": "Selected: {name}, {count} members. Your participation preference does not change team membership.",
+      "participation": {
+        "already_have_team": "Already have a team",
+        "want_to_join_team": "Want to join",
+        "want_to_create_team": "Want to create",
+        "working_individually": "Individually"
+      },
+      "participationHelp": {
+        "already_have_team": "Have a team already? Open team matching to connect with your teammates.",
+        "want_to_join_team": "Find people with complementary skills and join a team.",
+        "want_to_create_team": "Find teammates to start a team together.",
+        "working_individually": "You prefer to participate individually. You can change this later."
+      },
+      "skills": {
+        "0": "Python",
+        "1": "Machine Learning",
+        "2": "GIS",
+        "3": "Frontend",
+        "4": "UI/UX",
+        "5": "Business",
+        "6": "Hardware"
+      },
+      "interests": {
+        "0": "Earth observation",
+        "1": "Climate resilience",
+        "2": "Open data",
+        "3": "Space exploration",
+        "4": "Education"
+      },
+      "roles": {
+        "0": "Python / Machine Learning",
+        "1": "Frontend",
+        "2": "UI/UX",
+        "3": "GIS",
+        "4": "Business",
+        "5": "Hardware"
+      }
     }
   }
 }

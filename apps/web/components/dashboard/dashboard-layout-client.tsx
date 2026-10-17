@@ -1,65 +1,61 @@
 "use client"
 
-import * as React from "react"
+import { useLocale, useTranslations } from "next-intl"
 import { usePathname } from "@/i18n/routing"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/dashboard/app-sidebar"
 import { DashboardNavbar } from "@/components/dashboard/dashboard-navbar"
-import { DashboardRole } from "@/components/dashboard/dashboard-config"
-import { getAuthUser, UserSession } from "@/lib/auth"
+import { getDashboardRole } from "@/components/dashboard/dashboard-navigation"
+import { useAuthUser, type UserSession } from "@/lib/auth"
+import { cn } from "@/lib/utils"
+import styles from "./dashboard-shell.module.css"
+import { DashboardThemeContext } from "./dashboard-theme-context"
 
 interface DashboardLayoutClientProps {
   children: React.ReactNode
   initialUser?: UserSession | null
+  fontClassName: string
 }
 
-export function DashboardLayoutClient({ children, initialUser }: DashboardLayoutClientProps) {
+export function DashboardLayoutClient({
+  children,
+  initialUser,
+  fontClassName,
+}: DashboardLayoutClientProps) {
   const pathname = usePathname()
-
-  // Determine current role based on active route
-  const roleFromPath: DashboardRole | null = React.useMemo(() => {
-    if (pathname.includes("/dashboard/organizer")) return "organizer"
-    if (pathname.includes("/dashboard/judge")) return "judge"
-    if (pathname.includes("/dashboard/mentor")) return "mentor"
-    if (pathname.includes("/dashboard/participant")) return "participant"
-    return null
-  }, [pathname])
-
-  const initialRole: DashboardRole =
-    initialUser?.roles?.includes("organizer") || initialUser?.role === "organizer"
-      ? "organizer"
-      : initialUser?.roles?.includes("judge") || initialUser?.role === "judge"
-      ? "judge"
-      : initialUser?.roles?.includes("mentor") || initialUser?.role === "mentor"
-      ? "mentor"
-      : "participant"
-
-  const [fallbackRole, setFallbackRole] = React.useState<DashboardRole>(initialRole)
-
-  React.useEffect(() => {
-    const user = getAuthUser() || initialUser
-    if (user?.roles?.includes("organizer") || user?.role === "organizer") {
-      setFallbackRole("organizer")
-    } else if (user?.roles?.includes("judge") || user?.role === "judge") {
-      setFallbackRole("judge")
-    } else if (user?.roles?.includes("mentor") || user?.role === "mentor") {
-      setFallbackRole("mentor")
-    }
-  }, [initialUser])
-
-  const currentRole: DashboardRole = roleFromPath ?? fallbackRole
+  const locale = useLocale()
+  const t = useTranslations("Dashboard.shell")
+  const user = useAuthUser() ?? initialUser
+  const currentRole = getDashboardRole(pathname, user)
+  const themeClassName = cn("dark", styles.theme, fontClassName)
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <AppSidebar currentRole={currentRole} />
-      <SidebarInset className="min-h-svh flex flex-col bg-background overflow-x-clip">
-        <DashboardNavbar currentRole={currentRole} />
-        <main className="size-full flex-1 px-4 py-6 sm:px-6 mx-auto max-w-360">
-          <div className="flex flex-col gap-3 lg:gap-6">
-            {children}
+    <DashboardThemeContext.Provider value={themeClassName}>
+      <div
+        className={cn(themeClassName, styles.shell)}
+        data-dashboard-shell=""
+        dir={locale === "ar" ? "rtl" : "ltr"}
+      >
+        <a href="#dashboard-content" className={styles.skipLink}>
+          {t("skipToContent")}
+        </a>
+        <DashboardNavbar
+          currentRole={currentRole}
+          themeClassName={themeClassName}
+        />
+        <SidebarProvider
+          className={styles.workspace}
+          style={{ "--sidebar-width": "224px" } as React.CSSProperties}
+        >
+          <AppSidebar currentRole={currentRole} />
+          <div className={styles.content}>
+            <main id="dashboard-content" tabIndex={-1} className={styles.main}>
+              {children}
+            </main>
+            <footer className={styles.footer}>{t("footer")}</footer>
           </div>
-        </main>
-      </SidebarInset>
-    </SidebarProvider>
+        </SidebarProvider>
+      </div>
+    </DashboardThemeContext.Provider>
   )
 }

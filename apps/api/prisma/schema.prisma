@@ -159,6 +159,8 @@ model Profile {
   linkedinUrl        String?    @map("linkedin_url")
   portfolioUrl       String?    @map("portfolio_url")
   isPublic           Boolean    @default(true) @map("is_public")
+  shareProjectsWithMentors Boolean @default(true) @map("share_projects_with_mentors")
+  hideFromSearch     Boolean    @default(false) @map("hide_from_search")
   createdAt          DateTime   @default(now()) @map("created_at")
   updatedAt          DateTime   @updatedAt @map("updated_at")
 
@@ -167,6 +169,7 @@ model Profile {
   @@index([teamStatus])
   @@index([preferredChallenge])
   @@index([isPublic])
+  @@index([isPublic, hideFromSearch, updatedAt(sort: Desc)], map: "profiles_matching_visibility_idx")
   @@map("profiles")
 }
 

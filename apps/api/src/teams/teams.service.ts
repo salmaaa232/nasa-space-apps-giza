@@ -11,6 +11,7 @@ import { UpdateTeamDto } from './dto/update-team.dto.js';
 import { CreateTaskDto, UpdateTaskDto } from './dto/team-task.dto.js';
 import { InviteMemberDto, JoinRequestDto } from './dto/team-request.dto.js';
 import { SearchTeamsDto } from './dto/search-teams.dto.js';
+import { publicProfile } from '../profile/public-profile.js';
 import {
   TeamMemberRole,
   TeamStatus,
@@ -49,10 +50,8 @@ export class TeamsService {
           ? {
               id: m.user.id,
               name: m.user.name,
-              email: m.user.email,
               avatar: m.user.avatar,
-              phone: m.user.phone,
-              profile: m.user.profile || null,
+              profile: publicProfile(m.user.profile),
             }
           : undefined,
       })),
@@ -69,18 +68,24 @@ export class TeamsService {
           ? {
               id: t.assignedTo.id,
               name: t.assignedTo.name,
-              email: t.assignedTo.email,
               avatar: t.assignedTo.avatar,
             }
           : null,
       })),
-      invitations: team.invitations,
-      joinRequests: team.joinRequests,
+      invitations: team.invitations?.map((invitation: any) => ({
+        id: invitation.id, teamId: invitation.teamId, invitedUserId: invitation.invitedUserId,
+        status: invitation.status, message: invitation.message, createdAt: invitation.createdAt,
+        invitedUser: invitation.invitedUser ? { id: invitation.invitedUser.id, name: invitation.invitedUser.name, avatar: invitation.invitedUser.avatar, profile: publicProfile(invitation.invitedUser.profile) } : undefined,
+      })),
+      joinRequests: team.joinRequests?.map((request: any) => ({
+        id: request.id, teamId: request.teamId, userId: request.userId, status: request.status,
+        message: request.message, createdAt: request.createdAt,
+        user: request.user ? { id: request.user.id, name: request.user.name, avatar: request.user.avatar, profile: publicProfile(request.user.profile) } : undefined,
+      })),
       createdBy: team.createdBy
         ? {
             id: team.createdBy.id,
             name: team.createdBy.name,
-            email: team.createdBy.email,
             avatar: team.createdBy.avatar,
           }
         : undefined,

@@ -1,5 +1,9 @@
 # 🌐 NASA Space Apps Giza — Web Frontend
 
+The dashboard shell now follows the NASA V1 prototype with dark styling, original assets, responsive navigation, and Arabic RTL support. Individual feature screens are being implemented in separate milestones. **The existing landing page is preserved.**
+
+See the [dashboard design reference](docs/dashboard-design-reference.md) for scope, design values, asset provenance, and route mappings. Run `pnpm --filter web test:browser` from the workspace root for the dashboard browser checks (requires local Chrome).
+
 The Next.js 16 frontend application for the **NASA Space Apps Giza** platform.
 
 > 💡 **Full Project Documentation**: For end-to-end setup, environment variables, demo accounts, and architectural overview, see the [Root README.md](../../README.md).

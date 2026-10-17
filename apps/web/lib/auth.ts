@@ -61,13 +61,8 @@ export function getAuthUser(): UserSession | null {
 
 export { useAuthUser, AuthProvider } from "@/components/auth-provider";
 
-export async function clearAuth(): Promise<void> {
+export function clearLocalAuth(): void {
   if (typeof window === 'undefined') return;
-  try {
-    await authClient.signOut();
-  } catch {
-    // Fallback if network fails
-  }
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
@@ -75,8 +70,18 @@ export async function clearAuth(): Promise<void> {
   document.cookie = 'auth_user=; path=/; max-age=0';
   document.cookie = 'auth_roles=; path=/; max-age=0';
   document.cookie = 'auth_role=; path=/; max-age=0';
-  document.cookie = 'better-auth.session_token=; path=/; max-age=0';
   window.dispatchEvent(new Event('auth-user-changed'));
+}
+
+export async function clearAuth(): Promise<void> {
+  if (typeof window === 'undefined') return;
+  try {
+    await authClient.signOut();
+  } catch {
+    // Clear local hints even if the API is unavailable.
+  }
+  clearLocalAuth();
+  document.cookie = 'better-auth.session_token=; path=/; max-age=0';
 }
 
 export function getRedirectPathByRole(roles: string[] = []): string {
