@@ -1,0 +1,135 @@
+[
+  {
+    "file": "space-apps-logo.png",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/06cb4.png",
+    "bytes": 23328,
+    "sha256": "07239c79e7036bef690b4ef59605a0ec03af4ad740465b10147eacdec0d20219",
+    "svgRoot": null
+  },
+  {
+    "file": "account.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/ced0a.svg",
+    "bytes": 1190,
+    "sha256": "65875cccda307a3998a10a50659a09ea2a74b658cb470029e0e549a99908b183",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "participant.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/c160d.svg",
+    "bytes": 1179,
+    "sha256": "55013c7a85786296bca71e6ca433ecc68b8cd1c5c215ebe5f86f31493c369365",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "mission.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/fc564.svg",
+    "bytes": 401,
+    "sha256": "2e8219a1756f7d0a869918fd17839aab680e0414920313951db4ae162b15602a",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "challenges.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/2ac98.svg",
+    "bytes": 386,
+    "sha256": "5839513acfca57c9acb120b17e223e4e7c6fd2ebcf8ed93b713a8df15ee09d83",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "find-team.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/a7b1e.svg",
+    "bytes": 1170,
+    "sha256": "41c5908f408fbde1c9cfce96e4fa54f6c1719ca13449f1a037af221e7195fd1c",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "team.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/4d856.svg",
+    "bytes": 1115,
+    "sha256": "1727163c842e885beff79a81c94ba3f3b64ff6e69df332b01c83668e1444abaf",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "tasks.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/ebde3.svg",
+    "bytes": 404,
+    "sha256": "ebbdf43cf28e94b6af6d6f88eb2b9e3ce1bc575ea623258ecf010d22773559e3",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "community.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/df4b2.svg",
+    "bytes": 713,
+    "sha256": "169c440ddae8c5dcfc1f319a08e9847886079b15a415ec45116acbb12bf14ac4",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "schedule.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/9424d.svg",
+    "bytes": 750,
+    "sha256": "27603ca9469e4f68eccacd56bbeff30132aecdf11efc5495ad4a60f522a8391e",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "mentors.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/d569c.svg",
+    "bytes": 880,
+    "sha256": "0dcb9aa4366bc2b0af3df4ed1a1d885f66d28943582e178dcd1b3db8817fb91b",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "submission.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/814eb.svg",
+    "bytes": 528,
+    "sha256": "2f0bd677b563a1d167ede7c930140bb691b230a21fbcbea0ed4847217e93c413",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "chevron.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/e34be.svg",
+    "bytes": 315,
+    "sha256": "17f232c7a915ff2f242f069181e9eac92eea440fe9fc2fc439b9ed69318a2355",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "location.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6052/f6814.svg",
+    "bytes": 658,
+    "sha256": "f46fcd04f7ab62b69cdf14e7caa21f1d5c6fcd1b6c8ff94f66687c057cd6146e",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "mission-active.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6234/2a3f5.svg",
+    "bytes": 401,
+    "sha256": "1cfef74e350444a376321eafcacf1f7e584ddf168ae32a4f68707d118edd96f0",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "find-team-active.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/5893/7a28b.svg",
+    "bytes": 1170,
+    "sha256": "86fbb6a783122bbc7c2f2b37a1afb62c4d8340195d95f0714615c06410831ed4",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "team-active.svg",
+    "source": "https://cactus-mango-36876487.figma.site/assets/pages/6387/2f8a8.svg",
+    "bytes": 1115,
+    "sha256": "19a937b0fe88f02f7c666a9b55684a34823f7e730c984d409b4fde180a8ea512",
+    "svgRoot": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
+  },
+  {
+    "file": "fonts/inter.woff2",
+    "source": "https://static.figma.com/font/Inter_1",
+    "bytes": 417056,
+    "sha256": "f628ac774a7f172b51fb128869bd825042625d4481deb793d08decc044604609",
+    "svgRoot": null
+  },
+  {
+    "file": "fonts/space-grotesk.woff2",
+    "source": "https://static.figma.com/font/SpaceGrotesk_wght__1",
+    "bytes": 63704,
+    "sha256": "a424f63a577b2b5fc5b78c6b44e966af0a4002c01fea390121e2a3ba66e408a8",
+    "svgRoot": null
+  }
+]

@@ -2,11 +2,39 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { UpdateProfileDto } from './dto/update-profile.dto.js';
 import { SearchProfilesDto } from './dto/search-profiles.dto.js';
-import { TeamStatus } from '@prisma/client';
+import { Prisma, TeamStatus, type Profile, type User } from '@prisma/client';
+
+const publicProfileUserSelect = {
+  id: true, name: true, username: true, avatar: true, role: true, emailVerified: true,
+} satisfies Prisma.UserSelect;
+
+type ProfileWithUser = Profile & { user?: Pick<User, 'id' | 'name' | 'username' | 'avatar' | 'role' | 'emailVerified'> & Partial<Pick<User, 'email' | 'phone'>> & {
+  teamMemberships?: { team: { id: string; name: string; _count: { members: number } } }[];
+} };
+
+const profileUserSelect = {
+  id: true,
+  name: true,
+  username: true,
+  email: true,
+  phone: true,
+  avatar: true,
+  role: true,
+  emailVerified: true,
+  teamMemberships: {
+    take: 1,
+    select: {
+      team: {
+        select: { id: true, name: true, _count: { select: { members: true } } },
+      },
+    },
+  },
+} satisfies Prisma.UserSelect;
 
 @Injectable()
 export class ProfileService {
@@ -15,8 +43,7 @@ export class ProfileService {
   // -------------------------------------------------------------
   // Helper: Format Profile Response
   // -------------------------------------------------------------
-  private formatProfile(profile: any) {
-    if (!profile) return null;
+  private formatProfile(profile: ProfileWithUser, full = false) {
     return {
       id: profile.id,
       userId: profile.userId,
@@ -25,23 +52,43 @@ export class ProfileService {
       skills: profile.skills || [],
       bio: profile.bio,
       interests: profile.interests || [],
-      experience: profile.experience,
+      ...(full
+        ? {
+            experience: profile.experience,
+            githubUrl: profile.githubUrl,
+            linkedinUrl: profile.linkedinUrl,
+            portfolioUrl: profile.portfolioUrl,
+            shareProjectsWithMentors: profile.shareProjectsWithMentors,
+            hideFromSearch: profile.hideFromSearch,
+          }
+        : {}),
       preferredChallenge: profile.preferredChallenge,
       teamStatus: profile.teamStatus,
       desiredRole: profile.desiredRole,
-      githubUrl: profile.githubUrl,
-      linkedinUrl: profile.linkedinUrl,
-      portfolioUrl: profile.portfolioUrl,
       isPublic: profile.isPublic,
       createdAt: profile.createdAt,
       updatedAt: profile.updatedAt,
+      ...(full
+        ? {
+            team: profile.user?.teamMemberships?.[0]?.team
+              ? {
+                  id: profile.user.teamMemberships[0].team.id,
+                  name: profile.user.teamMemberships[0].team.name,
+                  memberCount:
+                    profile.user.teamMemberships[0].team._count.members,
+                }
+              : null,
+          }
+        : {}),
       user: profile.user
         ? {
             id: profile.user.id,
             name: profile.user.name,
             username: profile.user.username,
-            email: profile.user.email,
-            phone: profile.user.phone,
+            ...(full
+              ? { email: profile.user.email, phone: profile.user.phone }
+              : {}),
+            emailVerified: profile.user.emailVerified,
             avatar: profile.user.avatar,
             role: profile.user.role,
           }
@@ -53,121 +100,96 @@ export class ProfileService {
   // Get Current User Profile (creates initial one if none exists)
   // -------------------------------------------------------------
   async getMyProfile(userId: string) {
+    const existing = await this.prisma.profile.findUnique({
+      where: { userId },
+      include: { user: { select: profileUserSelect } },
+    });
+    if (existing) return this.formatProfile(existing, true);
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        profile: true,
-      },
+      select: { id: true },
     });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    if (!user.profile) {
-      // Auto-initialize profile record
-      const newProfile = await this.prisma.profile.create({
-        data: {
-          userId: user.id,
-          teamStatus: TeamStatus.want_to_join_team,
-          skills: [],
-          interests: [],
-          isPublic: true,
-        },
-        include: {
-          user: true,
-        },
-      });
-      return this.formatProfile(newProfile);
-    }
-
-    return this.formatProfile({
-      ...user.profile,
-      user,
+    if (!user) throw new NotFoundException('User not found');
+    // Concurrent first visits are safe: the unique userId is enforced by the DB.
+    await this.prisma.profile.createMany({
+      data: [{ userId }],
+      skipDuplicates: true,
     });
+    return this.formatProfile(
+      await this.prisma.profile.findUniqueOrThrow({
+        where: { userId },
+        include: { user: { select: profileUserSelect } },
+      }),
+      true,
+    );
   }
 
-  // -------------------------------------------------------------
-  // Update Current User Profile
-  // -------------------------------------------------------------
   async updateMyProfile(userId: string, dto: UpdateProfileDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    // Update User-level fields if provided
-    if (dto.name !== undefined || dto.phone !== undefined || dto.avatar !== undefined) {
-      await this.prisma.user.update({
+    const { name, phone, avatar, expectedUpdatedAt, ...fields } = dto;
+    return this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.findUnique({
         where: { id: userId },
-        data: {
-          ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
-          ...(dto.phone !== undefined ? { phone: dto.phone.trim() } : {}),
-          ...(dto.avatar !== undefined ? { avatar: dto.avatar.trim() } : {}),
-        },
+        select: { id: true },
       });
-    }
-
-    // Extract profile fields
-    const { name: _name, phone: _phone, avatar: _avatar, ...profileData } = dto;
-
-    const updatedProfile = await this.prisma.profile.upsert({
-      where: { userId },
-      update: {
-        ...(profileData.institution !== undefined ? { institution: profileData.institution?.trim() || null } : {}),
-        ...(profileData.academicLevel !== undefined ? { academicLevel: profileData.academicLevel?.trim() || null } : {}),
-        ...(profileData.skills !== undefined ? { skills: profileData.skills } : {}),
-        ...(profileData.bio !== undefined ? { bio: profileData.bio?.trim() || null } : {}),
-        ...(profileData.interests !== undefined ? { interests: profileData.interests } : {}),
-        ...(profileData.experience !== undefined ? { experience: profileData.experience?.trim() || null } : {}),
-        ...(profileData.preferredChallenge !== undefined ? { preferredChallenge: profileData.preferredChallenge?.trim() || null } : {}),
-        ...(profileData.teamStatus !== undefined ? { teamStatus: profileData.teamStatus } : {}),
-        ...(profileData.desiredRole !== undefined ? { desiredRole: profileData.desiredRole?.trim() || null } : {}),
-        ...(profileData.githubUrl !== undefined ? { githubUrl: profileData.githubUrl?.trim() || null } : {}),
-        ...(profileData.linkedinUrl !== undefined ? { linkedinUrl: profileData.linkedinUrl?.trim() || null } : {}),
-        ...(profileData.portfolioUrl !== undefined ? { portfolioUrl: profileData.portfolioUrl?.trim() || null } : {}),
-        ...(profileData.isPublic !== undefined ? { isPublic: profileData.isPublic } : {}),
-      },
-      create: {
-        userId,
-        institution: profileData.institution?.trim() || null,
-        academicLevel: profileData.academicLevel?.trim() || null,
-        skills: profileData.skills || [],
-        bio: profileData.bio?.trim() || null,
-        interests: profileData.interests || [],
-        experience: profileData.experience?.trim() || null,
-        preferredChallenge: profileData.preferredChallenge?.trim() || null,
-        teamStatus: profileData.teamStatus || TeamStatus.want_to_join_team,
-        desiredRole: profileData.desiredRole?.trim() || null,
-        githubUrl: profileData.githubUrl?.trim() || null,
-        linkedinUrl: profileData.linkedinUrl?.trim() || null,
-        portfolioUrl: profileData.portfolioUrl?.trim() || null,
-        isPublic: profileData.isPublic ?? true,
-      },
-      include: {
-        user: true,
-      },
+      if (!user) throw new NotFoundException('User not found');
+      const data = Object.fromEntries(
+        Object.entries(fields).map(([key, value]) => [
+          key,
+          typeof value === 'string' && key !== 'teamStatus'
+            ? value.trim() || null
+            : value,
+        ]),
+      ) as Prisma.ProfileUncheckedUpdateInput;
+      if (expectedUpdatedAt) {
+        const result = await tx.profile.updateMany({
+          where: { userId, updatedAt: new Date(expectedUpdatedAt) },
+          data: { ...data, updatedAt: new Date(Math.max(Date.now(), new Date(expectedUpdatedAt).getTime() + 1)) },
+        });
+        if (result.count !== 1)
+          throw new ConflictException(
+            'Profile changed since it was loaded. Reload before saving.',
+          );
+      } else {
+        await tx.profile.upsert({
+          where: { userId },
+          update: data,
+          create: { ...fields, userId },
+        });
+      }
+      if (name !== undefined || phone !== undefined || avatar !== undefined) {
+        await tx.user.update({
+          where: { id: userId },
+          data: {
+            ...(name !== undefined ? { name: name.trim() } : {}),
+            ...(phone !== undefined ? { phone: phone.trim() || null } : {}),
+            ...(avatar !== undefined ? { avatar: avatar.trim() || null } : {}),
+          },
+        });
+      }
+      return this.formatProfile(
+        await tx.profile.findUniqueOrThrow({
+          where: { userId },
+          include: { user: { select: profileUserSelect } },
+        }),
+        true,
+      );
     });
-
-    return this.formatProfile(updatedProfile);
   }
 
   // -------------------------------------------------------------
   // Get Profile By ID or User ID (Public / Authorized)
   // -------------------------------------------------------------
-  async getProfileById(identifier: string, viewerUserId?: string, viewerRoles: string[] = []) {
+  async getProfileById(
+    identifier: string,
+    viewerUserId?: string,
+    viewerRoles: string[] = [],
+  ) {
     const profile = await this.prisma.profile.findFirst({
       where: {
-        OR: [
-          { id: identifier },
-          { userId: identifier },
-        ],
+        OR: [{ id: identifier }, { userId: identifier }],
       },
       include: {
-        user: true,
+        user: { select: publicProfileUserSelect },
       },
     });
 
@@ -176,13 +198,17 @@ export class ProfileService {
     }
 
     const isOwner = viewerUserId === profile.userId;
-    const isPrivileged = viewerRoles.some((r) => ['organizer', 'mentor', 'judge'].includes(r));
+    const isPrivileged = viewerRoles.includes('organizer');
 
-    if (!profile.isPublic && !isOwner && !isPrivileged) {
+    if (
+      (!profile.isPublic || profile.hideFromSearch) &&
+      !isOwner &&
+      !isPrivileged
+    ) {
       throw new ForbiddenException('This participant profile is private');
     }
 
-    return this.formatProfile(profile);
+    return this.formatProfile(profile, isOwner || isPrivileged);
   }
 
   // -------------------------------------------------------------
@@ -193,8 +219,9 @@ export class ProfileService {
     const limit = Math.min(100, Math.max(1, dto.limit || 20));
     const skip = (page - 1) * limit;
 
-    const where: any = {
+    const where: Prisma.ProfileWhereInput = {
       isPublic: true,
+      hideFromSearch: false,
       user: {
         isActive: true,
         deletedAt: null,
@@ -256,7 +283,7 @@ export class ProfileService {
         take: limit,
         orderBy: { updatedAt: 'desc' },
         include: {
-          user: true,
+          user: { select: publicProfileUserSelect },
         },
       }),
       this.prisma.profile.count({ where }),
@@ -281,7 +308,9 @@ export class ProfileService {
     });
 
     if (!myProfile) {
-      throw new NotFoundException('Please create your profile first to get teammate recommendations');
+      throw new NotFoundException(
+        'Please create your profile first to get teammate recommendations',
+      );
     }
 
     // Potential teammates: looking for or creating a team, public, not self
@@ -289,6 +318,7 @@ export class ProfileService {
       where: {
         userId: { not: userId },
         isPublic: true,
+        hideFromSearch: false,
         teamStatus: {
           in: [TeamStatus.want_to_join_team, TeamStatus.want_to_create_team],
         },
@@ -298,13 +328,15 @@ export class ProfileService {
         },
       },
       include: {
-        user: true,
+        user: { select: publicProfileUserSelect },
       },
       take: 50,
     });
 
     const mySkillsLower = (myProfile.skills || []).map((s) => s.toLowerCase());
-    const myInterestsLower = (myProfile.interests || []).map((i) => i.toLowerCase());
+    const myInterestsLower = (myProfile.interests || []).map((i) =>
+      i.toLowerCase(),
+    );
     const myChallenge = myProfile.preferredChallenge?.toLowerCase() || '';
 
     const scoredCandidates = candidates.map((candidate) => {
@@ -320,11 +352,15 @@ export class ProfileService {
           myChallenge.includes(candidate.preferredChallenge.toLowerCase()))
       ) {
         score += 40;
-        matchReasons.push(`Shares preferred challenge: ${candidate.preferredChallenge}`);
+        matchReasons.push(
+          `Shares preferred challenge: ${candidate.preferredChallenge}`,
+        );
       }
 
       // 2. Shared interests (+10 pts each)
-      const candidateInterestsLower = (candidate.interests || []).map((i) => i.toLowerCase());
+      const candidateInterestsLower = (candidate.interests || []).map((i) =>
+        i.toLowerCase(),
+      );
       const sharedInterests = candidateInterestsLower.filter((interest) =>
         myInterestsLower.includes(interest),
       );
@@ -339,14 +375,17 @@ export class ProfileService {
       );
       if (complementarySkills.length > 0) {
         score += Math.min(30, complementarySkills.length * 10);
-        matchReasons.push(`Brings complementary skills: ${complementarySkills.slice(0, 3).join(', ')}`);
+        matchReasons.push(
+          `Brings complementary skills: ${complementarySkills.slice(0, 3).join(', ')}`,
+        );
       }
 
       // 4. Complementary role (+20 pts)
       if (
         candidate.desiredRole &&
         myProfile.desiredRole &&
-        candidate.desiredRole.toLowerCase() !== myProfile.desiredRole.toLowerCase()
+        candidate.desiredRole.toLowerCase() !==
+          myProfile.desiredRole.toLowerCase()
       ) {
         score += 20;
         matchReasons.push(`Complementary role: ${candidate.desiredRole}`);

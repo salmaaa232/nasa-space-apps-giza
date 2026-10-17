@@ -76,7 +76,7 @@ export class ProfileController {
   /**
    * Get a public profile by profile ID or user ID
    */
-  @Public()
+  @UseGuards(AuthGuard)
   @Get(':id')
   async getProfileById(
     @Param('id') id: string,

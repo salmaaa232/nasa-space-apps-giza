@@ -7,7 +7,7 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, ArrowLeft, ArrowRight, Shield, Award, Compass, Users } from "lucide-react"
-import { setAuth, getRedirectPathByRole, getAuthUser } from "@/lib/auth"
+import { setAuth, getRedirectPathByRole, clearLocalAuth } from "@/lib/auth"
 import { authClient } from "@/lib/auth-client"
 
 export default function LoginPage() {
@@ -24,27 +24,42 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const user = getAuthUser()
-    if (user && user.roles && user.roles.length > 0) {
-      const redirectPath = getRedirectPathByRole(user.roles)
-      router.replace(redirectPath as "/dashboard/participant")
-    } else {
-      authClient
+    let active = true
+    // Cached user/role hints can outlive the session. Verify first, then restore
+    // the cookies the route proxy needs before navigating to a dashboard.
+    authClient
         .getSession()
         .then((sessionRes) => {
+          if (!active) return
           if (sessionRes.data?.user) {
-            const u = sessionRes.data.user as { role?: string }
+            const u = sessionRes.data.user as { id: string; name?: string; email: string; role?: string }
             const role = u.role || "participant"
+            if (!["organizer", "judge", "mentor", "participant"].includes(role)) {
+              clearLocalAuth()
+              setCheckingAuth(false)
+              return
+            }
+            setAuth({ accessToken: sessionRes.data.session.token }, {
+              id: u.id,
+              name: u.name || u.email,
+              fullName: u.name || u.email,
+              email: u.email,
+              role,
+              roles: [role],
+            })
             const redirectPath = getRedirectPathByRole([role])
             router.replace(redirectPath as "/dashboard/participant")
           } else {
+            clearLocalAuth()
             setCheckingAuth(false)
           }
         })
         .catch(() => {
+          if (!active) return
+          clearLocalAuth()
           setCheckingAuth(false)
         })
-    }
+    return () => { active = false }
   }, [router])
 
   // Demo accounts for rapid role testing

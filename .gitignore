@@ -36,3 +36,4 @@ Thumbs.db
 # Vitest / Coverage
 coverage/
 .turbo/
+apps/web/.playwright/
