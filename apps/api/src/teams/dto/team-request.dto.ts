@@ -1,8 +1,19 @@
-import { IsBoolean, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class InviteMemberDto {
   @IsString()
-  userId!: string;
+  @IsOptional()
+  userId?: string;
+
+  @IsEmail()
+  @IsOptional()
+  email?: string;
 
   @IsString()
   @IsOptional()
@@ -19,4 +30,9 @@ export class JoinRequestDto {
 export class RespondRequestDto {
   @IsBoolean()
   accept!: boolean;
+}
+
+export class TransferLeadershipDto {
+  @IsString()
+  userId!: string;
 }

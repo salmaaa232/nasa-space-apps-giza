@@ -9,12 +9,13 @@ export default getRequestConfig(async ({ requestLocale }) => {
   }
 
   // Load active translation files
-  const [home, metadata, auth, roleGuard, dashboard] = await Promise.all([
+  const [home, metadata, auth, roleGuard, dashboard, teams] = await Promise.all([
     import(`../messages/${locale}/home.json`),
     import(`../messages/${locale}/metadata.json`),
     import(`../messages/${locale}/auth.json`),
     import(`../messages/${locale}/role_guard.json`),
     import(`../messages/${locale}/dashboard.json`),
+    import(`../messages/${locale}/teams.json`),
   ])
 
   return {
@@ -25,6 +26,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...auth.default,
       ...roleGuard.default,
       ...dashboard.default,
+      ...teams.default,
     },
   }
 })

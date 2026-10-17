@@ -49,7 +49,7 @@ describe('TeamsService', () => {
         update: vi.fn(),
       },
       user: {
-        findUnique: vi.fn(),
+        findUnique: vi.fn().mockResolvedValue({ phone: '+201000000000' }),
       },
       $transaction: vi.fn(async (cb) => {
         if (typeof cb === 'function') {

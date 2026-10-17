@@ -18,6 +18,7 @@ import {
   InviteMemberDto,
   JoinRequestDto,
   RespondRequestDto,
+  TransferLeadershipDto,
 } from './dto/team-request.dto.js';
 import { SearchTeamsDto } from './dto/search-teams.dto.js';
 import { AuthGuard } from '../auth/guards/auth.guard.js';
@@ -49,6 +50,28 @@ export class TeamsController {
   async getMyTeam(@CurrentUser() user: AuthenticatedUser) {
     const result = await this.teamsService.getMyTeam(user.id);
     return result || { team: null };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('requests/me')
+  async getMyRequests(@CurrentUser() user: AuthenticatedUser) {
+    return this.teamsService.getMyRequests(user.id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id/leader')
+  async getLeaderContact(@Param('id') teamId: string) {
+    return this.teamsService.getLeaderContact(teamId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post(':id/leadership')
+  async transferLeadership(
+    @Param('id') teamId: string,
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: TransferLeadershipDto,
+  ) {
+    return this.teamsService.transferLeadership(teamId, user.id, dto.userId);
   }
 
   /**

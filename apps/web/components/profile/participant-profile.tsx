@@ -38,6 +38,7 @@ import styles from "./participant-profile.module.css"
 
 export function ParticipantProfilePage() {
   const t = useTranslations("Dashboard.profilePage")
+  const contact = useTranslations("Teams")
   const locale = useLocale()
   const theme = useContext(DashboardThemeContext)
   const [profile, setProfile] = useState<ParticipantProfile | null>(null)
@@ -154,7 +155,7 @@ export function ParticipantProfilePage() {
       if (user)
         setAuth(
           {},
-          { ...user, name: result.user.name, fullName: result.user.name }
+          { ...user, name: result.user.name, fullName: result.user.name, phone: result.user.phone }
         )
     } catch (error) {
       if (!controller.signal.aborted) setError(errorKey(error))
@@ -308,6 +309,14 @@ export function ParticipantProfilePage() {
                   </select>
                 </label>
               </div>
+              <label className={styles.field} htmlFor="profile-phone">
+                {contact("contactNumber")}
+                <Input id="profile-phone" className={styles.control} type="tel"
+                  dir="ltr" autoComplete="tel" required minLength={7} maxLength={40}
+                  value={draft.phone} onChange={e => change("phone", e.target.value)}
+                  aria-describedby="profile-phone-help" />
+              </label>
+              <p id="profile-phone-help" className={styles.muted}>{contact("contactHelp")}</p>
               {(["skills", "bio", "experience", "interests"] as const).map(
                 (key) =>
                   key === "skills" || key === "interests" ? (
